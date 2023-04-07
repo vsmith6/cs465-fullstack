@@ -1,9 +1,23 @@
 const mongoose = require('mongoose');
-let dbURI = 'mongodb://localhost:27017/travlr';
-if (process.env.NODE_ENV === 'production') {
-  dbURI = process.env.MONGODB_URI;
-}
+const host = process.env.DB_HOST || "127.0.0.1";
+const dbURI = `mongodb://${host}/travlr`;
+const readLine = require("readline");
+
+// if (process.env.NODE_ENV === 'production') {
+//   dbURI = process.env.MONGODB_URI;
+// }
 mongoose.connect(dbURI);
+
+const connect = () => {
+  setTimeout(
+    () =>
+      mongoose.connect(dbURI, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+      }),
+    1000
+  );
+};
 
 mongoose.connection.on('connected', () => {
   console.log(`Mongoose connected to ${dbURI}`);
