@@ -87,4 +87,18 @@ export class TripDataService {
       .catch(this.handleError);
   }
 
+  
+  public deleteTrip(tripCode: string): Promise<any> {
+    console.log("Inside TripDataService#deleteTrip");
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("travlr-token")}`,
+    });
+    return this.http
+      .delete(this.tripUrl + tripCode, {headers: headers})
+      .toPromise()
+      .then((response) => (response))
+      .catch(this.handleError);
+  }
+
 }

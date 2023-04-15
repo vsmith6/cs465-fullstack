@@ -5,8 +5,8 @@ const user = mongoose.model("users");
 mongoose.set('useFindAndModify', false);
 
 const getUser = (req, res, callback) => {
-    if (req.payload && req.payload.email) {
-      user.findOne({ email: req.payload.email }).exec((err, user) => {
+    if (req.auth && req.auth.email) {
+      user.findOne({ email: req.auth.email }).exec((err, user) => {
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         } else if (err) {
@@ -132,11 +132,34 @@ const tripsUpdateTrip = async (req, res) => {
     });
 }
 
+const tripDeleteTrip = async (req, res) => {
+    console.log(req.body);
+    getUser(req, res, () => {
+      model
+      .findOneAndDelete({ code: req.params.tripCode }, (err, docs) => {
+        if (err) {
+          return res.status(404).send({
+            message: "This trip could not be found " + req.params.tripCode,
+          });
+        }
+      })
+        .then((response) => {
+          res.send(response);
+        })
+        .catch((err) => {
+          return res.status(404).send({
+            message: "This trip could not be found  " + req.params.tripCode,
+          });
+        });
+    });
+  };
+
 
 module.exports = {
     tripsList,
     tripsFindCode,
     tripsAddTrip,
     tripsUpdateTrip,
+    tripDeleteTrip,
     getUser
 };
